@@ -26,7 +26,7 @@ import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.office.api.v1.EventConstants;
 import io.mifos.office.api.v1.client.AlreadyExistsException;
 import io.mifos.office.api.v1.client.BadRequestException;
-import io.mifos.office.api.v1.client.OfficeClient;
+import io.mifos.office.api.v1.client.OrganizationManager;
 import io.mifos.office.api.v1.client.NotFoundException;
 import io.mifos.office.api.v1.domain.Address;
 import io.mifos.office.api.v1.domain.Office;
@@ -74,7 +74,7 @@ public class TestOffice {
           = new TenantApplicationSecurityEnvironmentTestRule(testEnvironment, this::waitForInitialize);
 
   @Autowired
-  private OfficeClient officeClient;
+  private OrganizationManager organizationManager;
 
   @Autowired
   private EventRecorder eventRecorder;
@@ -102,92 +102,92 @@ public class TestOffice {
   @Test
   public void shouldCreateOffice() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
-    final Office savedOffice = this.officeClient.findOfficeByIdentifier(office.getIdentifier());
+    final Office savedOffice = this.organizationManager.findOfficeByIdentifier(office.getIdentifier());
     Assert.assertNotNull(savedOffice);
     Assert.assertEquals(office.getIdentifier(), savedOffice.getIdentifier());
     Assert.assertEquals(office.getName(), savedOffice.getName());
     Assert.assertEquals(office.getDescription(), savedOffice.getDescription());
 
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
   @Test
   public void shouldNotCreateOfficeDuplicate() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
     try {
-      this.officeClient.createOffice(office);
+      this.organizationManager.createOffice(office);
       Assert.fail();
     } catch (final AlreadyExistsException ex) {
       // do nothing, expected
     }
 
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
   @Test
   public void shouldUpdateOffice() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
     final String modifiedOfficeName = RandomStringUtils.randomAlphanumeric(32);
     office.setName(modifiedOfficeName);
 
-    this.officeClient.updateOffice(office.getIdentifier(), office);
+    this.organizationManager.updateOffice(office.getIdentifier(), office);
     this.eventRecorder.wait(EventConstants.OPERATION_PUT_OFFICE, office.getIdentifier());
 
-    final Office changedOffice = this.officeClient.findOfficeByIdentifier(office.getIdentifier());
+    final Office changedOffice = this.organizationManager.findOfficeByIdentifier(office.getIdentifier());
     Assert.assertEquals(modifiedOfficeName, changedOffice.getName());
 
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
   @Test
   public void shouldNotUpdateOfficeIdentifierMismatch() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
     final String originalIdentifier = office.getIdentifier();
     office.setIdentifier(RandomStringUtils.randomAlphanumeric(32));
 
     try {
-      this.officeClient.updateOffice(originalIdentifier, office);
+      this.organizationManager.updateOffice(originalIdentifier, office);
       Assert.fail();
     } catch (final BadRequestException ex) {
       // do nothing, expected
     }
-    this.officeClient.deleteOffice(originalIdentifier);
+    this.organizationManager.deleteOffice(originalIdentifier);
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
   @Test
   public void shouldAddBranch() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
     final Office branch = OfficeFactory.createRandomOffice();
-    this.officeClient.addBranch(office.getIdentifier(), branch);
+    this.organizationManager.addBranch(office.getIdentifier(), branch);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, branch.getIdentifier());
 
-    final OfficePage officePage = this.officeClient.getBranches(office.getIdentifier(), 0, 10, null, null);
+    final OfficePage officePage = this.organizationManager.getBranches(office.getIdentifier(), 0, 10, null, null);
     Assert.assertEquals(Long.valueOf(1L), officePage.getTotalElements());
 
     final Office savedBranch = officePage.getOffices().get(0);
     Assert.assertEquals(branch.getIdentifier(), savedBranch.getIdentifier());
 
-    this.officeClient.deleteOffice(branch.getIdentifier());
+    this.organizationManager.deleteOffice(branch.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, branch.getIdentifier());
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
@@ -195,7 +195,7 @@ public class TestOffice {
   public void shouldNotAddBranchParentNotFound() throws Exception {
     try {
       final Office branch = OfficeFactory.createRandomOffice();
-      this.officeClient.addBranch(RandomStringUtils.randomAlphanumeric(32), branch);
+      this.organizationManager.addBranch(RandomStringUtils.randomAlphanumeric(32), branch);
       Assert.fail();
     } catch (final NotFoundException ex) {
       // do nothing, expected
@@ -205,14 +205,14 @@ public class TestOffice {
   @Test
   public void shouldSetAddressOfOffice() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
     final Address address = AddressFactory.createRandomAddress();
-    this.officeClient.setAddressForOffice(office.getIdentifier(), address);
+    this.organizationManager.setAddressForOffice(office.getIdentifier(), address);
     this.eventRecorder.wait(EventConstants.OPERATION_PUT_ADDRESS, office.getIdentifier());
 
-    final Address savedAddress = this.officeClient.getAddressOfOffice(office.getIdentifier());
+    final Address savedAddress = this.organizationManager.getAddressOfOffice(office.getIdentifier());
     Assert.assertNotNull(savedAddress);
     Assert.assertEquals(address.getStreet(), savedAddress.getStreet());
     Assert.assertEquals(address.getCity(), savedAddress.getCity());
@@ -221,7 +221,7 @@ public class TestOffice {
     Assert.assertEquals(address.getCountryCode(), savedAddress.getCountryCode());
     Assert.assertEquals(address.getCountry(), savedAddress.getCountry());
 
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
@@ -230,10 +230,10 @@ public class TestOffice {
     final Office office = OfficeFactory.createRandomOffice();
     final Address address = AddressFactory.createRandomAddress();
     office.setAddress(address);
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
-    final Address savedAddress = this.officeClient.getAddressOfOffice(office.getIdentifier());
+    final Address savedAddress = this.organizationManager.getAddressOfOffice(office.getIdentifier());
     Assert.assertNotNull(savedAddress);
     Assert.assertEquals(address.getStreet(), savedAddress.getStreet());
     Assert.assertEquals(address.getCity(), savedAddress.getCity());
@@ -242,7 +242,7 @@ public class TestOffice {
     Assert.assertEquals(address.getCountryCode(), savedAddress.getCountryCode());
     Assert.assertEquals(address.getCountry(), savedAddress.getCountry());
 
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
@@ -251,32 +251,32 @@ public class TestOffice {
     final Office office = OfficeFactory.createRandomOffice();
     final Address address = AddressFactory.createRandomAddress();
     office.setAddress(address);
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
-    final Address savedAddress = this.officeClient.getAddressOfOffice(office.getIdentifier());
+    final Address savedAddress = this.organizationManager.getAddressOfOffice(office.getIdentifier());
     Assert.assertNotNull(savedAddress);
 
-    this.officeClient.deleteAddressOfOffice(office.getIdentifier());
+    this.organizationManager.deleteAddressOfOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_ADDRESS, office.getIdentifier());
 
-    Assert.assertNull(this.officeClient.getAddressOfOffice(office.getIdentifier()));
+    Assert.assertNull(this.organizationManager.getAddressOfOffice(office.getIdentifier()));
 
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
   @Test
   public void shouldReturnParentOfBranch() throws Exception {
     final Office parent = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(parent);
+    this.organizationManager.createOffice(parent);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, parent.getIdentifier());
 
     final Office branch = OfficeFactory.createRandomOffice();
-    this.officeClient.addBranch(parent.getIdentifier(), branch);
+    this.organizationManager.addBranch(parent.getIdentifier(), branch);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, branch.getIdentifier());
 
-    final Office savedBranch = this.officeClient.findOfficeByIdentifier(branch.getIdentifier());
+    final Office savedBranch = this.organizationManager.findOfficeByIdentifier(branch.getIdentifier());
 
     Assert.assertEquals(parent.getIdentifier(), savedBranch.getParentIdentifier());
   }

@@ -26,7 +26,7 @@ import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.office.api.v1.EventConstants;
 import io.mifos.office.api.v1.client.AlreadyExistsException;
 import io.mifos.office.api.v1.client.BadRequestException;
-import io.mifos.office.api.v1.client.OfficeClient;
+import io.mifos.office.api.v1.client.OrganizationManager;
 import io.mifos.office.api.v1.client.NotFoundException;
 import io.mifos.office.api.v1.domain.ContactDetail;
 import io.mifos.office.api.v1.domain.Employee;
@@ -79,7 +79,7 @@ public class TestEmployee {
           = new TenantApplicationSecurityEnvironmentTestRule(testEnvironment, this::waitForInitialize);
 
   @Autowired
-  private OfficeClient officeClient;
+  private OrganizationManager organizationManager;
 
   @Autowired
   private EventRecorder eventRecorder;
@@ -108,12 +108,12 @@ public class TestEmployee {
   public void shouldCreateEmployee() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
     {
-      this.officeClient.createEmployee(employee);
+      this.organizationManager.createEmployee(employee);
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
       Assert.assertTrue(found);
     }
 
-    final Employee savedEmployee = this.officeClient.findEmployee(employee.getIdentifier());
+    final Employee savedEmployee = this.organizationManager.findEmployee(employee.getIdentifier());
 
     Assert.assertNotNull(savedEmployee);
     Assert.assertEquals(employee.getIdentifier(), savedEmployee.getIdentifier());
@@ -121,41 +121,41 @@ public class TestEmployee {
     Assert.assertEquals(employee.getMiddleName(), savedEmployee.getMiddleName());
     Assert.assertEquals(employee.getSurname(), savedEmployee.getSurname());
 
-    this.officeClient.deleteEmployee(employee.getIdentifier());
+    this.organizationManager.deleteEmployee(employee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
   }
 
   @Test
   public void shouldNotCreateEmployeeAlreadyExists() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
 
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     try {
-      this.officeClient.createEmployee(employee);
+      this.organizationManager.createEmployee(employee);
       Assert.fail();
     } catch (final AlreadyExistsException ex) {
       // do nothing, expected
     }
 
-    this.officeClient.deleteEmployee(employee.getIdentifier());
+    this.organizationManager.deleteEmployee(employee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
   }
 
   @Test
   public void shouldFindEmployeesByOffice() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
     final Employee employee = EmployeeFactory.createRandomEmployee();
     employee.setAssignedOffice(office.getIdentifier());
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
 
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
-    final EmployeePage employeePage = this.officeClient.fetchEmployees(null, office.getIdentifier(), 0, 20, null, null);
+    final EmployeePage employeePage = this.organizationManager.fetchEmployees(null, office.getIdentifier(), 0, 20, null, null);
     Assert.assertEquals(Long.valueOf(1L), employeePage.getTotalElements());
     final Employee savedEmployee = employeePage.getEmployees().get(0);
     Assert.assertEquals(employee.getIdentifier(), savedEmployee.getIdentifier());
@@ -163,45 +163,45 @@ public class TestEmployee {
     Assert.assertEquals(employee.getMiddleName(), savedEmployee.getMiddleName());
     Assert.assertEquals(employee.getSurname(), savedEmployee.getSurname());
 
-    this.officeClient.deleteEmployee(employee.getIdentifier());
+    this.organizationManager.deleteEmployee(employee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
-    this.officeClient.deleteOffice(office.getIdentifier());
+    this.organizationManager.deleteOffice(office.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
   }
 
   @Test
   public void shouldFindAllEmployees() throws Exception {
     final Employee firstEmployee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(firstEmployee);
+    this.organizationManager.createEmployee(firstEmployee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, firstEmployee.getIdentifier());
     final Employee secondEmployee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(secondEmployee);
+    this.organizationManager.createEmployee(secondEmployee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, secondEmployee.getIdentifier());
 
-    final EmployeePage employeePage = this.officeClient.fetchEmployees(null, null, 0, 20, null, null);
+    final EmployeePage employeePage = this.organizationManager.fetchEmployees(null, null, 0, 20, null, null);
     Assert.assertEquals(Long.valueOf(2L), employeePage.getTotalElements());
 
-    this.officeClient.deleteEmployee(firstEmployee.getIdentifier());
+    this.organizationManager.deleteEmployee(firstEmployee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, firstEmployee.getIdentifier());
-    this.officeClient.deleteEmployee(secondEmployee.getIdentifier());
+    this.organizationManager.deleteEmployee(secondEmployee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, secondEmployee.getIdentifier());
   }
 
   @Test
   public void shouldDeleteEmployee() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
-    Assert.assertNotNull(this.officeClient.findEmployee(employee.getIdentifier()));
+    Assert.assertNotNull(this.organizationManager.findEmployee(employee.getIdentifier()));
 
     {
-      this.officeClient.deleteEmployee(employee.getIdentifier());
+      this.organizationManager.deleteEmployee(employee.getIdentifier());
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
       Assert.assertTrue(found);
     }
 
     try {
-      this.officeClient.findEmployee(employee.getIdentifier());
+      this.organizationManager.findEmployee(employee.getIdentifier());
       Assert.fail();
     } catch (final NotFoundException ex) {
       // do nothing, expected
@@ -211,11 +211,11 @@ public class TestEmployee {
   @Test
   public void shouldUpdateEmployee() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     final Office office = OfficeFactory.createRandomOffice();
-    this.officeClient.createOffice(office);
+    this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
     final Employee updatedEmployee = EmployeeFactory.createRandomEmployee();
@@ -223,12 +223,12 @@ public class TestEmployee {
     updatedEmployee.setAssignedOffice(office.getIdentifier());
 
     {
-      this.officeClient.updateEmployee(employee.getIdentifier(), updatedEmployee);
+      this.organizationManager.updateEmployee(employee.getIdentifier(), updatedEmployee);
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_PUT_EMPLOYEE, employee.getIdentifier());
       Assert.assertTrue(found);
     }
 
-    final Employee savedEmployee = this.officeClient.findEmployee(employee.getIdentifier());
+    final Employee savedEmployee = this.organizationManager.findEmployee(employee.getIdentifier());
     Assert.assertNotNull(savedEmployee);
     Assert.assertEquals(updatedEmployee.getIdentifier(), savedEmployee.getIdentifier());
     Assert.assertEquals(updatedEmployee.getGivenName(), savedEmployee.getGivenName());
@@ -237,7 +237,7 @@ public class TestEmployee {
     Assert.assertEquals(updatedEmployee.getAssignedOffice(), savedEmployee.getAssignedOffice());
 
     {
-      this.officeClient.deleteEmployee(employee.getIdentifier());
+      this.organizationManager.deleteEmployee(employee.getIdentifier());
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
       Assert.assertTrue(found);
     }
@@ -246,44 +246,44 @@ public class TestEmployee {
   @Test
   public void shouldNotUpdateEmployeeCodeMismatch() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     final String originalCode = employee.getIdentifier();
     employee.setIdentifier(RandomStringUtils.randomAlphanumeric(8));
 
     try {
-      this.officeClient.updateEmployee(originalCode, employee);
+      this.organizationManager.updateEmployee(originalCode, employee);
       Assert.fail();
     } catch (final BadRequestException ex) {
       // do nothing, expected
     }
 
-    this.officeClient.deleteEmployee(originalCode);
+    this.organizationManager.deleteEmployee(originalCode);
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, originalCode);
   }
 
   @Test
   public void shouldNotUpdateEmployeeNotFound() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     try {
-      this.officeClient.updateEmployee(RandomStringUtils.randomAlphanumeric(8), employee);
+      this.organizationManager.updateEmployee(RandomStringUtils.randomAlphanumeric(8), employee);
       Assert.fail();
     } catch (final NotFoundException ex) {
       // do nothing, expected
     }
 
-    this.officeClient.deleteEmployee(employee.getIdentifier());
+    this.organizationManager.deleteEmployee(employee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
   }
 
   @Test
   public void shouldSetContactDetailOfEmployee() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     final ContactDetail email = new ContactDetail();
@@ -299,12 +299,12 @@ public class TestEmployee {
     phone.setPreferenceLevel(2);
 
     {
-      this.officeClient.setContactDetails(employee.getIdentifier(), Arrays.asList(email, phone));
+      this.organizationManager.setContactDetails(employee.getIdentifier(), Arrays.asList(email, phone));
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_PUT_CONTACT_DETAIL, employee.getIdentifier());
       Assert.assertTrue(found);
     }
 
-    final List<ContactDetail> savedContactDetails = this.officeClient.fetchContactDetails(employee.getIdentifier());
+    final List<ContactDetail> savedContactDetails = this.organizationManager.fetchContactDetails(employee.getIdentifier());
     Assert.assertNotNull(savedContactDetails);
     Assert.assertEquals(2, savedContactDetails.size());
 
@@ -321,7 +321,7 @@ public class TestEmployee {
     Assert.assertEquals(phone.getPreferenceLevel(), savedPhone.getPreferenceLevel());
 
     {
-      this.officeClient.deleteEmployee(employee.getIdentifier());
+      this.organizationManager.deleteEmployee(employee.getIdentifier());
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
       Assert.assertTrue(found);
     }
@@ -335,7 +335,7 @@ public class TestEmployee {
     contactDetail.setValue("employee@example.com");
 
     try {
-      this.officeClient.setContactDetails(RandomStringUtils.randomAlphanumeric(8), Collections.singletonList(contactDetail));
+      this.organizationManager.setContactDetails(RandomStringUtils.randomAlphanumeric(8), Collections.singletonList(contactDetail));
       Assert.fail();
     } catch (final NotFoundException ex) {
       // do nothing, expected
@@ -345,7 +345,7 @@ public class TestEmployee {
   @Test
   public void shouldDeleteContactDetailOfEmployee() throws Exception {
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    this.officeClient.createEmployee(employee);
+    this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     final ContactDetail email = new ContactDetail();
@@ -361,22 +361,22 @@ public class TestEmployee {
     phone.setPreferenceLevel(2);
 
     {
-      this.officeClient.setContactDetails(employee.getIdentifier(), Arrays.asList(email, phone));
+      this.organizationManager.setContactDetails(employee.getIdentifier(), Arrays.asList(email, phone));
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_PUT_CONTACT_DETAIL, employee.getIdentifier());
       Assert.assertTrue(found);
     }
 
-    Assert.assertNotNull(this.officeClient.fetchContactDetails(employee.getIdentifier()));
+    Assert.assertNotNull(this.organizationManager.fetchContactDetails(employee.getIdentifier()));
 
     {
-      this.officeClient.deleteContactDetails(employee.getIdentifier());
+      this.organizationManager.deleteContactDetails(employee.getIdentifier());
       final boolean found = this.eventRecorder.wait(EventConstants.OPERATION_DELETE_CONTACT_DETAIL, employee.getIdentifier());
       Assert.assertTrue(found);
     }
 
-    Assert.assertTrue(this.officeClient.fetchContactDetails(employee.getIdentifier()).isEmpty());
+    Assert.assertTrue(this.organizationManager.fetchContactDetails(employee.getIdentifier()).isEmpty());
 
-    this.officeClient.deleteEmployee(employee.getIdentifier());
+    this.organizationManager.deleteEmployee(employee.getIdentifier());
     this.eventRecorder.wait(EventConstants.OPERATION_DELETE_EMPLOYEE, employee.getIdentifier());
   }
 

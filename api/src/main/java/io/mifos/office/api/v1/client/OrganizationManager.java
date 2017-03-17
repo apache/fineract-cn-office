@@ -37,7 +37,7 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 @FeignClient(name="office-v1", path="/office/v1", configuration=CustomFeignClientsConfiguration.class)
-public interface OfficeClient {
+public interface OrganizationManager {
 
   @RequestMapping(
       value = "/offices",
