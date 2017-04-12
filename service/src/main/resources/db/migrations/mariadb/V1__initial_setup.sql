@@ -39,7 +39,7 @@ CREATE TABLE horus_addresses (
   street       VARCHAR(256) NOT NULL,
   city         VARCHAR(256) NOT NULL,
   region       VARCHAR(256) NULL,
-  postal_code  VARCHAR(32)  NOT NULL,
+  postal_code  VARCHAR(32)  NULL,
   country_code VARCHAR(2)   NOT NULL,
   country      VARCHAR(256) NOT NULL,
   CONSTRAINT address_pk
