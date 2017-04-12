@@ -24,15 +24,14 @@ import io.mifos.core.test.fixture.mariadb.MariaDBInitializer;
 import io.mifos.core.test.listener.EnableEventRecording;
 import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.office.api.v1.EventConstants;
-import io.mifos.office.api.v1.client.AlreadyExistsException;
-import io.mifos.office.api.v1.client.BadRequestException;
-import io.mifos.office.api.v1.client.OrganizationManager;
-import io.mifos.office.api.v1.client.NotFoundException;
+import io.mifos.office.api.v1.client.*;
 import io.mifos.office.api.v1.domain.Address;
+import io.mifos.office.api.v1.domain.Employee;
 import io.mifos.office.api.v1.domain.Office;
 import io.mifos.office.api.v1.domain.OfficePage;
 import io.mifos.office.rest.config.OfficeRestConfiguration;
 import io.mifos.office.util.AddressFactory;
+import io.mifos.office.util.EmployeeFactory;
 import io.mifos.office.util.OfficeFactory;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.*;
@@ -279,6 +278,46 @@ public class TestOffice {
     final Office savedBranch = this.organizationManager.findOfficeByIdentifier(branch.getIdentifier());
 
     Assert.assertEquals(parent.getIdentifier(), savedBranch.getParentIdentifier());
+  }
+
+  @Test(expected = NotFoundException.class)
+  public void shouldDeleteOffice() throws Exception{
+    final Office office = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(office);
+    this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
+
+    this.organizationManager.deleteOffice(office.getIdentifier());
+
+    this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
+
+    this.organizationManager.findOfficeByIdentifier(office.getIdentifier());
+  }
+
+  @Test(expected = ChildrenExistException.class)
+  public void shouldNotDeleteOfficeWithBranches() throws Exception{
+    final Office parent = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(parent);
+    this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, parent.getIdentifier());
+
+    final Office branch = OfficeFactory.createRandomOffice();
+    this.organizationManager.addBranch(parent.getIdentifier(), branch);
+    this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, branch.getIdentifier());
+
+    this.organizationManager.deleteOffice(parent.getIdentifier());
+  }
+
+  @Test(expected = ChildrenExistException.class)
+  public void shouldNotDeleteOfficeWithEmployees() throws Exception{
+    final Office office = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(office);
+    this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
+
+    final Employee employee = EmployeeFactory.createRandomEmployee();
+    employee.setAssignedOffice(office.getIdentifier());
+    this.organizationManager.createEmployee(employee);
+    this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
+
+    this.organizationManager.deleteOffice(office.getIdentifier());
   }
 
   @Configuration
