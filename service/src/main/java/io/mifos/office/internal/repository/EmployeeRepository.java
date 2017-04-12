@@ -33,4 +33,7 @@ public interface EmployeeRepository extends JpaRepository<EmployeeEntity, Long> 
   Page<EmployeeEntity> findByAssignedOffice(final OfficeEntity assignedOffice, final Pageable pageable);
 
   Page<EmployeeEntity> findByIdentifierContaining(String term, Pageable pageRequest);
+
+  @Query("SELECT CASE WHEN COUNT(e) > 0 THEN 'true' ELSE 'false' END FROM EmployeeEntity e WHERE e.assignedOffice = :office")
+  Boolean existsByAssignedOffice(@Param("office") final OfficeEntity assignedOffice);
 }

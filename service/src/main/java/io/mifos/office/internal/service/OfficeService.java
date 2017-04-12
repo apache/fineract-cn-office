@@ -22,10 +22,7 @@ import io.mifos.office.api.v1.domain.Office;
 import io.mifos.office.api.v1.domain.OfficePage;
 import io.mifos.office.internal.mapper.AddressMapper;
 import io.mifos.office.internal.mapper.OfficeMapper;
-import io.mifos.office.internal.repository.AddressEntity;
-import io.mifos.office.internal.repository.AddressRepository;
-import io.mifos.office.internal.repository.OfficeEntity;
-import io.mifos.office.internal.repository.OfficeRepository;
+import io.mifos.office.internal.repository.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,15 +41,18 @@ public class OfficeService {
   private final Logger logger;
   private final OfficeRepository officeRepository;
   private final AddressRepository addressRepository;
+  private final EmployeeRepository employeeRepository;
 
   @Autowired
   public OfficeService(@Qualifier(ServiceConstants.SERVICE_LOGGER_NAME) final Logger logger,
                        final OfficeRepository officeRepository,
-                       final AddressRepository addressRepository) {
+                       final AddressRepository addressRepository,
+                       final EmployeeRepository employeeRepository) {
     super();
     this.logger = logger;
     this.officeRepository = officeRepository;
     this.addressRepository = addressRepository;
+    this.employeeRepository = employeeRepository;
   }
 
   public boolean officeExists(final String identifier) {
@@ -61,11 +61,13 @@ public class OfficeService {
 
   public boolean branchExists(final String identifier) {
     final Optional<OfficeEntity> officeEntityOptional = this.officeRepository.findByIdentifier(identifier);
-    if (officeEntityOptional.isPresent()) {
-      return this.officeRepository.existsByParentOfficeId(officeEntityOptional.get().getId());
-    } else {
-      throw ServiceException.notFound("Office {0} not found.", identifier);
-    }
+    return officeEntityOptional.map(officeEntity -> this.officeRepository.existsByParentOfficeId(officeEntity.getId())).orElse(false);
+  }
+
+  public boolean hasEmployees(final String officeIdentifier){
+    return this.officeRepository.findByIdentifier(officeIdentifier)
+            .map(this.employeeRepository::existsByAssignedOffice)
+            .orElse(false);
   }
 
   @Transactional(readOnly = true)

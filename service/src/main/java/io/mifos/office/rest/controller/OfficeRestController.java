@@ -173,6 +173,14 @@ public class OfficeRestController {
       throw ServiceException.notFound("Parent office {0} not found.", identifier);
     }
 
+    if (office == null) {
+      throw ServiceException.badRequest("An office must be given.");
+    }
+
+    if (this.officeService.officeExists(office.getIdentifier())) {
+      throw ServiceException.conflict("Office {0} already exists.", office.getIdentifier());
+    }
+
     this.commandGateway.process(new AddBranchCommand(identifier, office));
     return ResponseEntity.accepted().build();
   }
@@ -208,13 +216,19 @@ public class OfficeRestController {
   @ResponseBody
   ResponseEntity<Void> deleteOffice(@PathVariable("identifier") final String identifier)
       throws InterruptedException {
+    if (!this.officeService.officeExists(identifier)) {
+      throw ServiceException.notFound("Office {0} not found.", identifier);
+    }
+
     if (this.officeService.branchExists(identifier)) {
       throw ServiceException.conflict("Office {0} has children.", identifier);
     }
 
-    if (this.officeService.officeExists(identifier)) {
-      this.commandGateway.process(new DeleteOfficeCommand(identifier));
+    if(this.officeService.hasEmployees(identifier)){
+      throw ServiceException.conflict("Office {0} has employees.", identifier);
     }
+
+    this.commandGateway.process(new DeleteOfficeCommand(identifier));
 
     return ResponseEntity.accepted().build();
   }
