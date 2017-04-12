@@ -202,6 +202,22 @@ public class TestOffice {
   }
 
   @Test
+  public void shouldNotAddBranchDuplicate() throws Exception {
+    final Office office = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(office);
+    this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
+    try {
+      this.organizationManager.addBranch(office.getIdentifier(), office);
+      Assert.fail();
+    } catch (final AlreadyExistsException ex) {
+      // do nothing, expected
+    }
+
+    this.organizationManager.deleteOffice(office.getIdentifier());
+    this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, office.getIdentifier());
+  }
+
+  @Test
   public void shouldSetAddressOfOffice() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
     this.organizationManager.createOffice(office);

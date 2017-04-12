@@ -90,7 +90,10 @@ public interface OrganizationManager {
       consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE
   )
-  @ThrowsException(status = HttpStatus.NOT_FOUND, exception = NotFoundException.class)
+  @ThrowsExceptions({
+          @ThrowsException(status = HttpStatus.NOT_FOUND, exception = NotFoundException.class),
+          @ThrowsException(status = HttpStatus.CONFLICT, exception = AlreadyExistsException.class)
+  })
   void addBranch(@PathVariable("identifier") final String identifier, @RequestBody final Office office);
 
   @RequestMapping(

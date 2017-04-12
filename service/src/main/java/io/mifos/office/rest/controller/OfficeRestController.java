@@ -173,6 +173,14 @@ public class OfficeRestController {
       throw ServiceException.notFound("Parent office {0} not found.", identifier);
     }
 
+    if (office == null) {
+      throw ServiceException.badRequest("An office must be given.");
+    }
+
+    if (this.officeService.officeExists(office.getIdentifier())) {
+      throw ServiceException.conflict("Office {0} already exists.", office.getIdentifier());
+    }
+
     this.commandGateway.process(new AddBranchCommand(identifier, office));
     return ResponseEntity.accepted().build();
   }
