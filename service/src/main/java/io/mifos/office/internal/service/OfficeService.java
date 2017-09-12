@@ -18,11 +18,17 @@ package io.mifos.office.internal.service;
 import io.mifos.core.lang.ServiceException;
 import io.mifos.office.ServiceConstants;
 import io.mifos.office.api.v1.domain.Address;
+import io.mifos.office.api.v1.domain.ExternalReference;
 import io.mifos.office.api.v1.domain.Office;
 import io.mifos.office.api.v1.domain.OfficePage;
 import io.mifos.office.internal.mapper.AddressMapper;
 import io.mifos.office.internal.mapper.OfficeMapper;
-import io.mifos.office.internal.repository.*;
+import io.mifos.office.internal.repository.AddressEntity;
+import io.mifos.office.internal.repository.AddressRepository;
+import io.mifos.office.internal.repository.EmployeeRepository;
+import io.mifos.office.internal.repository.ExternalReferenceRepository;
+import io.mifos.office.internal.repository.OfficeEntity;
+import io.mifos.office.internal.repository.OfficeRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -42,17 +48,20 @@ public class OfficeService {
   private final OfficeRepository officeRepository;
   private final AddressRepository addressRepository;
   private final EmployeeRepository employeeRepository;
+  private final ExternalReferenceRepository externalReferenceRepository;
 
   @Autowired
   public OfficeService(@Qualifier(ServiceConstants.SERVICE_LOGGER_NAME) final Logger logger,
                        final OfficeRepository officeRepository,
                        final AddressRepository addressRepository,
-                       final EmployeeRepository employeeRepository) {
+                       final EmployeeRepository employeeRepository,
+                       final ExternalReferenceRepository externalReferenceRepository) {
     super();
     this.logger = logger;
     this.officeRepository = officeRepository;
     this.addressRepository = addressRepository;
     this.employeeRepository = employeeRepository;
+    this.externalReferenceRepository = externalReferenceRepository;
   }
 
   public boolean officeExists(final String identifier) {
@@ -102,6 +111,8 @@ public class OfficeService {
 
         final Optional<AddressEntity> addressEntityOptional = this.addressRepository.findByOffice(officeEntityOptional.get());
         addressEntityOptional.ifPresent(addressEntity -> office.setAddress(AddressMapper.map(addressEntity)));
+
+        office.setExternalReferences(this.hasExternalReferences(office.getIdentifier()));
       });
 
       return officeOptional;
@@ -146,7 +157,16 @@ public class OfficeService {
 
       final Optional<AddressEntity> addressEntityOptional = this.addressRepository.findByOffice(officeEntity);
       addressEntityOptional.ifPresent(addressEntity -> office.setAddress(AddressMapper.map(addressEntity)));
+
+      office.setExternalReferences(this.hasExternalReferences(office.getIdentifier()));
     });
     return offices;
+  }
+
+  public boolean hasExternalReferences(final String officeIdentifier) {
+    return this.externalReferenceRepository.findByOfficeIdentifier(officeIdentifier)
+        .stream()
+        .anyMatch(externalReferenceEntity ->
+            externalReferenceEntity.getState().equals(ExternalReference.State.ACTIVE.name()));
   }
 }

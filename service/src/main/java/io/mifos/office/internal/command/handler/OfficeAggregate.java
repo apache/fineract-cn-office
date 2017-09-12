@@ -22,19 +22,23 @@ import io.mifos.core.command.annotation.EventEmitter;
 import io.mifos.core.lang.ServiceException;
 import io.mifos.office.ServiceConstants;
 import io.mifos.office.api.v1.EventConstants;
+import io.mifos.office.api.v1.domain.ExternalReference;
 import io.mifos.office.api.v1.domain.Office;
+import io.mifos.office.internal.command.AddBranchCommand;
+import io.mifos.office.internal.command.AddExternalReferenceCommand;
+import io.mifos.office.internal.command.CreateOfficeCommand;
 import io.mifos.office.internal.command.DeleteAddressOfOfficeCommand;
+import io.mifos.office.internal.command.DeleteOfficeCommand;
+import io.mifos.office.internal.command.SetAddressForOfficeCommand;
+import io.mifos.office.internal.command.UpdateOfficeCommand;
 import io.mifos.office.internal.mapper.AddressMapper;
 import io.mifos.office.internal.mapper.OfficeMapper;
 import io.mifos.office.internal.repository.AddressEntity;
 import io.mifos.office.internal.repository.AddressRepository;
+import io.mifos.office.internal.repository.ExternalReferenceEntity;
+import io.mifos.office.internal.repository.ExternalReferenceRepository;
 import io.mifos.office.internal.repository.OfficeEntity;
 import io.mifos.office.internal.repository.OfficeRepository;
-import io.mifos.office.internal.command.AddBranchCommand;
-import io.mifos.office.internal.command.CreateOfficeCommand;
-import io.mifos.office.internal.command.DeleteOfficeCommand;
-import io.mifos.office.internal.command.SetAddressForOfficeCommand;
-import io.mifos.office.internal.command.UpdateOfficeCommand;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -52,15 +56,18 @@ public class OfficeAggregate {
   private final Logger logger;
   private final OfficeRepository officeRepository;
   private final AddressRepository addressRepository;
+  private final ExternalReferenceRepository externalReferenceRepository;
 
   @Autowired
   public OfficeAggregate(@Qualifier(ServiceConstants.SERVICE_LOGGER_NAME) final Logger logger,
                          final OfficeRepository officeRepository,
-                         final AddressRepository addressRepository) {
+                         final AddressRepository addressRepository,
+                         final ExternalReferenceRepository externalReferenceRepository) {
     super();
     this.logger = logger;
     this.officeRepository = officeRepository;
     this.addressRepository = addressRepository;
+    this.externalReferenceRepository = externalReferenceRepository;
   }
 
   @Transactional
@@ -126,11 +133,11 @@ public class OfficeAggregate {
     if (optionalOfficeEntity.isPresent()) {
       final OfficeEntity officeEntityToDelete = optionalOfficeEntity.get();
       final Optional<AddressEntity> optionalAddressEntity = this.addressRepository.findByOffice(officeEntityToDelete);
-      if (optionalAddressEntity.isPresent()) {
-        this.addressRepository.delete(optionalAddressEntity.get());
-      }
+      optionalAddressEntity.ifPresent(this.addressRepository::delete);
 
       this.officeRepository.delete(officeEntityToDelete);
+
+      this.externalReferenceRepository.deleteByOfficeIdentifier(deleteOfficeCommand.identifier());
     }
 
     return deleteOfficeCommand.identifier();
@@ -186,6 +193,32 @@ public class OfficeAggregate {
       }
     }
     return null;
+  }
+
+  @Transactional
+  @CommandHandler
+  @EventEmitter(selectorName = EventConstants.OPERATION_HEADER, selectorValue = EventConstants.OPERATION_PUT_REFERENCE)
+  public String addExternalReference(final AddExternalReferenceCommand addExternalReferenceCommand) {
+
+    final String officeIdentifier = addExternalReferenceCommand.officeIdentifier();
+    final ExternalReference externalReference = addExternalReferenceCommand.externalReference();
+
+    final Optional<ExternalReferenceEntity> optionalExternalReference =
+        this.externalReferenceRepository.findByOfficeIdentifierAndType(officeIdentifier, externalReference.getType());
+
+    final ExternalReferenceEntity externalReferenceEntity;
+    if (optionalExternalReference.isPresent()) {
+      externalReferenceEntity = optionalExternalReference.get();
+    } else {
+      externalReferenceEntity = new ExternalReferenceEntity();
+      externalReferenceEntity.setOfficeIdentifier(officeIdentifier);
+      externalReferenceEntity.setType(externalReference.getType());
+    }
+    externalReferenceEntity.setState(externalReference.getState());
+
+    this.externalReferenceRepository.save(externalReferenceEntity);
+
+    return officeIdentifier;
   }
 
   private void createOffice(final Office office, final Office parentOffice) {

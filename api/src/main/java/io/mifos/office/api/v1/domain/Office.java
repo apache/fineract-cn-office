@@ -26,6 +26,7 @@ public class Office {
   private String name;
   private String description;
   private Address address;
+  private Boolean externalReferences;
 
   public Office() {
     super();
@@ -69,5 +70,13 @@ public class Office {
 
   public void setAddress(Address address) {
     this.address = address;
+  }
+
+  public Boolean getExternalReferences() {
+    return this.externalReferences;
+  }
+
+  public void setExternalReferences(final Boolean externalReferences) {
+    this.externalReferences = externalReferences;
   }
 }

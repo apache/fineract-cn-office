@@ -94,4 +94,15 @@ public class OfficeEventListener {
       throws Exception {
     this.eventRecorder.event(tenant, EventConstants.OPERATION_DELETE_ADDRESS, payload, String.class);
   }
+
+  @JmsListener(
+      subscription = EventConstants.DESTINATION,
+      destination = EventConstants.DESTINATION,
+      selector = EventConstants.SELECTOR_PUT_REFERENCE
+  )
+  public void onPutAReference(@Header(TenantHeaderFilter.TENANT_HEADER) final String tenant,
+                              final String payload)
+      throws Exception {
+    this.eventRecorder.event(tenant, EventConstants.OPERATION_PUT_REFERENCE, payload, String.class);
+  }
 }

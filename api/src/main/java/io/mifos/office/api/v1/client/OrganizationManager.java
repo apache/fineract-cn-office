@@ -22,6 +22,7 @@ import io.mifos.office.api.v1.domain.Address;
 import io.mifos.office.api.v1.domain.ContactDetail;
 import io.mifos.office.api.v1.domain.Employee;
 import io.mifos.office.api.v1.domain.EmployeePage;
+import io.mifos.office.api.v1.domain.ExternalReference;
 import io.mifos.office.api.v1.domain.Office;
 import io.mifos.office.api.v1.domain.OfficePage;
 import org.springframework.cloud.netflix.feign.FeignClient;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -223,4 +225,14 @@ public interface OrganizationManager {
   )
   @ThrowsException(status = HttpStatus.NOT_FOUND, exception = NotFoundException.class)
   void deleteContactDetails(@PathVariable("useridentifier") final String identifier);
+
+  @RequestMapping(
+      value = "/offices/{identifier}/references",
+      method = RequestMethod.PUT,
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  @ThrowsException(status = HttpStatus.NOT_FOUND, exception = NotFoundException.class)
+  void addExternalReference(@PathVariable("identifier") final String officeIdentifier,
+                            @RequestBody @Valid final ExternalReference externalReference);
 }
