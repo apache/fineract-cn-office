@@ -28,6 +28,7 @@ public interface EventConstants {
   String OPERATION_DELETE_OFFICE = "delete-office";
   String OPERATION_PUT_ADDRESS = "put-address";
   String OPERATION_DELETE_ADDRESS = "delete-address";
+  String OPERATION_PUT_REFERENCE = "put-reference";
 
   String OPERATION_POST_EMPLOYEE = "post-employee";
   String OPERATION_PUT_EMPLOYEE = "put-employee";
@@ -42,6 +43,7 @@ public interface EventConstants {
   String SELECTOR_DELETE_OFFICE = OPERATION_HEADER + " = '" + OPERATION_DELETE_OFFICE + "'";
   String SELECTOR_PUT_ADDRESS = OPERATION_HEADER + " = '" + OPERATION_PUT_ADDRESS + "'";
   String SELECTOR_DELETE_ADDRESS = OPERATION_HEADER + " = '" + OPERATION_DELETE_ADDRESS + "'";
+  String SELECTOR_PUT_REFERENCE = OPERATION_HEADER + " = '" + OPERATION_PUT_REFERENCE + "'";
 
   String SELECTOR_POST_EMPLOYEE = OPERATION_HEADER + " = '" + OPERATION_POST_EMPLOYEE + "'";
   String SELECTOR_PUT_EMPLOYEE = OPERATION_HEADER + " = '" + OPERATION_PUT_EMPLOYEE + "'";

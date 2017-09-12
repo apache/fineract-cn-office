@@ -20,13 +20,18 @@ import io.mifos.anubis.annotation.Permittable;
 import io.mifos.core.command.gateway.CommandGateway;
 import io.mifos.core.lang.ServiceException;
 import io.mifos.office.api.v1.PermittableGroupIds;
-import io.mifos.office.api.v1.domain.*;
-import io.mifos.office.internal.command.DeleteAddressOfOfficeCommand;
-import io.mifos.office.internal.service.EmployeeService;
-import io.mifos.office.internal.service.OfficeService;
+import io.mifos.office.api.v1.domain.Address;
+import io.mifos.office.api.v1.domain.ContactDetail;
+import io.mifos.office.api.v1.domain.Employee;
+import io.mifos.office.api.v1.domain.EmployeePage;
+import io.mifos.office.api.v1.domain.ExternalReference;
+import io.mifos.office.api.v1.domain.Office;
+import io.mifos.office.api.v1.domain.OfficePage;
 import io.mifos.office.internal.command.AddBranchCommand;
+import io.mifos.office.internal.command.AddExternalReferenceCommand;
 import io.mifos.office.internal.command.CreateEmployeeCommand;
 import io.mifos.office.internal.command.CreateOfficeCommand;
+import io.mifos.office.internal.command.DeleteAddressOfOfficeCommand;
 import io.mifos.office.internal.command.DeleteContactDetailCommand;
 import io.mifos.office.internal.command.DeleteEmployeeCommand;
 import io.mifos.office.internal.command.DeleteOfficeCommand;
@@ -35,13 +40,21 @@ import io.mifos.office.internal.command.SetAddressForOfficeCommand;
 import io.mifos.office.internal.command.SetContactDetailsCommand;
 import io.mifos.office.internal.command.UpdateEmployeeCommand;
 import io.mifos.office.internal.command.UpdateOfficeCommand;
+import io.mifos.office.internal.service.EmployeeService;
+import io.mifos.office.internal.service.OfficeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -226,6 +239,10 @@ public class OfficeRestController {
 
     if(this.officeService.hasEmployees(identifier)){
       throw ServiceException.conflict("Office {0} has employees.", identifier);
+    }
+
+    if (this.officeService.hasExternalReferences(identifier)) {
+      throw ServiceException.conflict("Office {0} has external references.", identifier);
     }
 
     this.commandGateway.process(new DeleteOfficeCommand(identifier));
@@ -449,6 +466,26 @@ public class OfficeRestController {
     }
 
     this.commandGateway.process(new DeleteContactDetailCommand(identifier));
+
+    return ResponseEntity.accepted().build();
+  }
+
+  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.OFFICE_MANAGEMENT)
+  @RequestMapping(
+      value = "/offices/{identifier}/references",
+      method = RequestMethod.PUT,
+      consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public
+  @ResponseBody
+  ResponseEntity<Void> addExternalReference(@PathVariable("identifier") final String officeIdentifier,
+                                            @RequestBody @Valid final ExternalReference externalReference) {
+    if (!this.officeService.officeExists(officeIdentifier)) {
+      throw ServiceException.notFound("Office {0} not found.", officeIdentifier);
+    }
+
+    this.commandGateway.process(new AddExternalReferenceCommand(officeIdentifier, externalReference));
 
     return ResponseEntity.accepted().build();
   }

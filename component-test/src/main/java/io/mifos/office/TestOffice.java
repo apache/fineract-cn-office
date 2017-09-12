@@ -24,9 +24,14 @@ import io.mifos.core.test.fixture.mariadb.MariaDBInitializer;
 import io.mifos.core.test.listener.EnableEventRecording;
 import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.office.api.v1.EventConstants;
-import io.mifos.office.api.v1.client.*;
+import io.mifos.office.api.v1.client.AlreadyExistsException;
+import io.mifos.office.api.v1.client.BadRequestException;
+import io.mifos.office.api.v1.client.ChildrenExistException;
+import io.mifos.office.api.v1.client.NotFoundException;
+import io.mifos.office.api.v1.client.OrganizationManager;
 import io.mifos.office.api.v1.domain.Address;
 import io.mifos.office.api.v1.domain.Employee;
+import io.mifos.office.api.v1.domain.ExternalReference;
 import io.mifos.office.api.v1.domain.Office;
 import io.mifos.office.api.v1.domain.OfficePage;
 import io.mifos.office.rest.config.OfficeRestConfiguration;
@@ -34,7 +39,12 @@ import io.mifos.office.util.AddressFactory;
 import io.mifos.office.util.EmployeeFactory;
 import io.mifos.office.util.OfficeFactory;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
@@ -310,7 +320,7 @@ public class TestOffice {
   }
 
   @Test(expected = ChildrenExistException.class)
-  public void shouldNotDeleteOfficeWithBranches() throws Exception{
+  public void shouldNotDeleteOfficeWithBranches() throws Exception {
     final Office parent = OfficeFactory.createRandomOffice();
     this.organizationManager.createOffice(parent);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, parent.getIdentifier());
@@ -323,7 +333,7 @@ public class TestOffice {
   }
 
   @Test(expected = ChildrenExistException.class)
-  public void shouldNotDeleteOfficeWithEmployees() throws Exception{
+  public void shouldNotDeleteOfficeWithEmployees() throws Exception {
     final Office office = OfficeFactory.createRandomOffice();
     this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
@@ -334,6 +344,59 @@ public class TestOffice {
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
 
     this.organizationManager.deleteOffice(office.getIdentifier());
+  }
+
+  @Test(expected = ChildrenExistException.class)
+  public void shouldNotDeleteOfficeWithActiveExternalReference() throws Exception {
+    final Office randomOffice = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(randomOffice);
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, randomOffice.getIdentifier()));
+
+    final ExternalReference externalReference = new ExternalReference();
+    externalReference.setType("anytype");
+    externalReference.setState(ExternalReference.State.ACTIVE.name());
+
+    this.organizationManager.addExternalReference(randomOffice.getIdentifier(), externalReference);
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_PUT_REFERENCE, randomOffice.getIdentifier()));
+
+    this.organizationManager.deleteOffice(randomOffice.getIdentifier());
+  }
+
+  @Test
+  public void shouldDeleteOfficeWithInactiveExternalReference() throws Exception {
+    final Office randomOffice = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(randomOffice);
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, randomOffice.getIdentifier()));
+
+    final ExternalReference externalReference = new ExternalReference();
+    externalReference.setType("anytype");
+    externalReference.setState(ExternalReference.State.INACTIVE.name());
+
+    this.organizationManager.addExternalReference(randomOffice.getIdentifier(), externalReference);
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_PUT_REFERENCE, randomOffice.getIdentifier()));
+
+    final Office office = this.organizationManager.findOfficeByIdentifier(randomOffice.getIdentifier());
+    Assert.assertFalse(office.getExternalReferences());
+
+    this.organizationManager.deleteOffice(randomOffice.getIdentifier());
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_DELETE_OFFICE, randomOffice.getIdentifier()));
+  }
+
+  @Test
+  public void shouldIndicateOfficeHasExternalReferences() throws Exception {
+    final Office randomOffice = OfficeFactory.createRandomOffice();
+    this.organizationManager.createOffice(randomOffice);
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, randomOffice.getIdentifier()));
+
+    final ExternalReference externalReference = new ExternalReference();
+    externalReference.setType("anytype");
+    externalReference.setState(ExternalReference.State.ACTIVE.name());
+
+    this.organizationManager.addExternalReference(randomOffice.getIdentifier(), externalReference);
+    Assert.assertTrue(this.eventRecorder.wait(EventConstants.OPERATION_PUT_REFERENCE, randomOffice.getIdentifier()));
+
+    final Office office = this.organizationManager.findOfficeByIdentifier(randomOffice.getIdentifier());
+    Assert.assertTrue(office.getExternalReferences());
   }
 
   @Configuration
