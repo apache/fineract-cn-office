@@ -112,7 +112,11 @@ public class OfficeService {
         final Optional<AddressEntity> addressEntityOptional = this.addressRepository.findByOffice(officeEntityOptional.get());
         addressEntityOptional.ifPresent(addressEntity -> office.setAddress(AddressMapper.map(addressEntity)));
 
-        office.setExternalReferences(this.hasExternalReferences(office.getIdentifier()));
+        office.setExternalReferences(
+            this.branchExists(office.getIdentifier())
+                || this.hasEmployees(office.getIdentifier())
+                || this.hasExternalReferences(office.getIdentifier())
+        );
       });
 
       return officeOptional;
@@ -158,7 +162,11 @@ public class OfficeService {
       final Optional<AddressEntity> addressEntityOptional = this.addressRepository.findByOffice(officeEntity);
       addressEntityOptional.ifPresent(addressEntity -> office.setAddress(AddressMapper.map(addressEntity)));
 
-      office.setExternalReferences(this.hasExternalReferences(office.getIdentifier()));
+      office.setExternalReferences(
+          this.branchExists(office.getIdentifier())
+              || this.hasEmployees(office.getIdentifier())
+              || this.hasExternalReferences(office.getIdentifier())
+      );
     });
     return offices;
   }

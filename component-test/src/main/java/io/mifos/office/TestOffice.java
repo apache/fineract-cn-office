@@ -329,6 +329,9 @@ public class TestOffice {
     this.organizationManager.addBranch(parent.getIdentifier(), branch);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, branch.getIdentifier());
 
+    final Office fetchedParent = this.organizationManager.findOfficeByIdentifier(parent.getIdentifier());
+    Assert.assertTrue(fetchedParent.getExternalReferences());
+
     this.organizationManager.deleteOffice(parent.getIdentifier());
   }
 
@@ -342,6 +345,9 @@ public class TestOffice {
     employee.setAssignedOffice(office.getIdentifier());
     this.organizationManager.createEmployee(employee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, employee.getIdentifier());
+
+    final Office fetchedOffice = this.organizationManager.findOfficeByIdentifier(office.getIdentifier());
+    Assert.assertTrue(fetchedOffice.getExternalReferences());
 
     this.organizationManager.deleteOffice(office.getIdentifier());
   }
