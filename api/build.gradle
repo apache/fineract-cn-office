@@ -18,7 +18,7 @@ apply from: '../shared.gradle'
 dependencies {
     compile(
             [group: 'org.springframework.cloud', name: 'spring-cloud-starter-feign'],
-            [group: 'io.mifos.core', name: 'api', version: versions.frameworkapi],
+            [group: 'org.apache.fineract.cn', name: 'api', version: versions.frameworkapi],
             [group: 'org.hibernate', name: 'hibernate-validator', version: versions.validator]
     )
 }
