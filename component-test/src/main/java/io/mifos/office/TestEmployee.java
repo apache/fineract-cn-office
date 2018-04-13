@@ -18,14 +18,6 @@
  */
 package io.mifos.office;
 
-import io.mifos.anubis.test.v1.TenantApplicationSecurityEnvironmentTestRule;
-import io.mifos.core.api.context.AutoUserContext;
-import io.mifos.core.test.env.TestEnvironment;
-import io.mifos.core.test.fixture.TenantDataStoreContextTestRule;
-import io.mifos.core.test.fixture.cassandra.CassandraInitializer;
-import io.mifos.core.test.fixture.mariadb.MariaDBInitializer;
-import io.mifos.core.test.listener.EnableEventRecording;
-import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.office.api.v1.EventConstants;
 import io.mifos.office.api.v1.client.AlreadyExistsException;
 import io.mifos.office.api.v1.client.BadRequestException;
@@ -38,7 +30,18 @@ import io.mifos.office.api.v1.domain.Office;
 import io.mifos.office.rest.config.OfficeRestConfiguration;
 import io.mifos.office.util.EmployeeFactory;
 import io.mifos.office.util.OfficeFactory;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.fineract.cn.anubis.test.v1.TenantApplicationSecurityEnvironmentTestRule;
+import org.apache.fineract.cn.api.context.AutoUserContext;
+import org.apache.fineract.cn.test.env.TestEnvironment;
+import org.apache.fineract.cn.test.fixture.TenantDataStoreContextTestRule;
+import org.apache.fineract.cn.test.fixture.cassandra.CassandraInitializer;
+import org.apache.fineract.cn.test.fixture.mariadb.MariaDBInitializer;
+import org.apache.fineract.cn.test.listener.EnableEventRecording;
+import org.apache.fineract.cn.test.listener.EventRecorder;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -59,10 +62,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)

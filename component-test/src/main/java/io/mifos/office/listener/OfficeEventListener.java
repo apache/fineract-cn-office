@@ -19,10 +19,10 @@
 package io.mifos.office.listener;
 
 import com.google.gson.Gson;
-import io.mifos.core.command.util.CommandConstants;
-import io.mifos.core.lang.config.TenantHeaderFilter;
-import io.mifos.core.test.listener.EventRecorder;
 import io.mifos.office.api.v1.EventConstants;
+import org.apache.fineract.cn.command.util.CommandConstants;
+import org.apache.fineract.cn.lang.config.TenantHeaderFilter;
+import org.apache.fineract.cn.test.listener.EventRecorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.annotation.JmsListener;

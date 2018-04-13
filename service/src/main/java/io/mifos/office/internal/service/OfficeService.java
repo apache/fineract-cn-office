@@ -18,7 +18,6 @@
  */
 package io.mifos.office.internal.service;
 
-import io.mifos.core.lang.ServiceException;
 import io.mifos.office.ServiceConstants;
 import io.mifos.office.api.v1.domain.Address;
 import io.mifos.office.api.v1.domain.ExternalReference;
@@ -32,6 +31,10 @@ import io.mifos.office.internal.repository.EmployeeRepository;
 import io.mifos.office.internal.repository.ExternalReferenceRepository;
 import io.mifos.office.internal.repository.OfficeEntity;
 import io.mifos.office.internal.repository.OfficeRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.apache.fineract.cn.lang.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -39,10 +42,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class OfficeService {

@@ -20,8 +20,8 @@ package io.mifos.office.internal.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import io.mifos.core.mariadb.config.EnableMariaDB;
 import io.mifos.office.ServiceConstants;
+import org.apache.fineract.cn.mariadb.config.EnableMariaDB;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

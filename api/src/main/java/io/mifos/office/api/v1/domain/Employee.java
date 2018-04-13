@@ -18,10 +18,9 @@
  */
 package io.mifos.office.api.v1.domain;
 
-import io.mifos.core.lang.validation.constraints.ValidIdentifier;
-
-import javax.validation.Valid;
 import java.util.List;
+import javax.validation.Valid;
+import org.apache.fineract.cn.lang.validation.constraints.ValidIdentifier;
 
 @SuppressWarnings("unused")
 public class Employee {

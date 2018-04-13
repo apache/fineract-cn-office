@@ -18,14 +18,14 @@
  */
 package io.mifos.office.rest.config;
 
-import io.mifos.anubis.config.EnableAnubis;
-import io.mifos.core.async.config.EnableAsync;
-import io.mifos.core.cassandra.config.EnableCassandra;
-import io.mifos.core.command.config.EnableCommandProcessing;
-import io.mifos.core.lang.config.EnableServiceException;
-import io.mifos.core.lang.config.EnableTenantContext;
 import io.mifos.office.ServiceConstants;
 import io.mifos.office.internal.config.OfficeServiceConfiguration;
+import org.apache.fineract.cn.anubis.config.EnableAnubis;
+import org.apache.fineract.cn.async.config.EnableAsync;
+import org.apache.fineract.cn.cassandra.config.EnableCassandra;
+import org.apache.fineract.cn.command.config.EnableCommandProcessing;
+import org.apache.fineract.cn.lang.config.EnableServiceException;
+import org.apache.fineract.cn.lang.config.EnableTenantContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

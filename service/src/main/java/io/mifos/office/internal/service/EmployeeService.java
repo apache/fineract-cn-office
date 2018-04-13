@@ -18,7 +18,6 @@
  */
 package io.mifos.office.internal.service;
 
-import io.mifos.core.lang.ServiceException;
 import io.mifos.office.ServiceConstants;
 import io.mifos.office.api.v1.domain.ContactDetail;
 import io.mifos.office.api.v1.domain.Employee;
@@ -31,18 +30,18 @@ import io.mifos.office.internal.repository.EmployeeEntity;
 import io.mifos.office.internal.repository.EmployeeRepository;
 import io.mifos.office.internal.repository.OfficeEntity;
 import io.mifos.office.internal.repository.OfficeRepository;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import org.apache.fineract.cn.lang.ServiceException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {

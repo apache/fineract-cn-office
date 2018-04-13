@@ -18,11 +18,6 @@
  */
 package io.mifos.office.internal.command.handler;
 
-import io.mifos.core.api.util.UserContextHolder;
-import io.mifos.core.command.annotation.Aggregate;
-import io.mifos.core.command.annotation.CommandHandler;
-import io.mifos.core.command.annotation.EventEmitter;
-import io.mifos.core.lang.ServiceException;
 import io.mifos.office.api.v1.EventConstants;
 import io.mifos.office.api.v1.domain.ContactDetail;
 import io.mifos.office.api.v1.domain.Employee;
@@ -39,12 +34,16 @@ import io.mifos.office.internal.repository.EmployeeEntity;
 import io.mifos.office.internal.repository.EmployeeRepository;
 import io.mifos.office.internal.repository.OfficeEntity;
 import io.mifos.office.internal.repository.OfficeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.fineract.cn.api.util.UserContextHolder;
+import org.apache.fineract.cn.command.annotation.Aggregate;
+import org.apache.fineract.cn.command.annotation.CommandHandler;
+import org.apache.fineract.cn.command.annotation.EventEmitter;
+import org.apache.fineract.cn.lang.ServiceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings({
     "unused"
