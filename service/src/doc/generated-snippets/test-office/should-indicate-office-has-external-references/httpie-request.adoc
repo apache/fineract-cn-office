@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ echo 'BgAjPgBZZWfbEj8GH89Za5k5Z8NPCrzh' | http PUT 'http://localhost:8080/office/v1/offices/BgAjPgBZZWfbEj8GH89Za5k5Z8NPCrzh/references' 'Content-Type:application/json' 'Accept:application/json'
+----

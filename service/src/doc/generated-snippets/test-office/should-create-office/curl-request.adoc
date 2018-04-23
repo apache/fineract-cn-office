@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/office/v1/offices' -i -X POST -H 'Content-Type: application/json' -H 'Accept: application/json' -d 'hna7lb2PicYbSK9hkemc7Ta8kBW6e43v'
+----

@@ -26,6 +26,7 @@ buildscript {
 
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("org.asciidoctor:asciidoctor-gradle-plugin:1.5.3")
     }
 }
 
@@ -37,6 +38,7 @@ plugins {
 apply from: '../shared.gradle'
 
 apply plugin: 'spring-boot'
+apply plugin: 'org.asciidoctor.convert'
 
 springBoot {
     executable = true
@@ -58,6 +60,23 @@ dependencies {
             [group: 'org.apache.fineract.cn', name: 'mariadb', version: versions.frameworkmariadb],
             [group: 'org.apache.fineract.cn', name: 'command', version: versions.frameworkcommand],
     )
+    testCompile(
+            [group: 'org.apache.fineract.cn.office', name: 'api', version: project.version],
+            [group: 'org.apache.fineract.cn', name: 'api', version: versions.frameworkapi],
+            [group: 'org.apache.fineract.cn', name: 'test', version: versions.frameworktest],
+            [group: 'org.apache.fineract.cn.anubis', name: 'test', version: versions.frameworkanubis],
+            [group: 'org.springframework.restdocs', name: 'spring-restdocs-mockmvc'],
+            [group: 'org.springframework.boot', name: 'spring-boot-starter-test'],
+            [group: 'junit', name: 'junit', version: '4.12']
+    )
+}
+
+asciidoctor {
+    sourceDir 'src/doc/asciidoc/'
+    outputDir 'src/doc/html5'
+    options backend: "html", doctype: "book"
+    attributes "source-highlighter": "highlightjs", \
+                'snippets': file('src/doc/generated-snippets/')
 }
 
 publishToMavenLocal.dependsOn bootRepackage

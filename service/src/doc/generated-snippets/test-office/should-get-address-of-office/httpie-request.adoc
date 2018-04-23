@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ http GET 'http://localhost:8080/office/v1/offices/mgi4uXODB0fWCrxet6gdfgFUt4sFvQBv/address' 'Accept:*/*' 'Content-Type:application/json'
+----

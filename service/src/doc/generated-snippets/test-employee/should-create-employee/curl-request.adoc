@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/office/v1/employees' -i -X POST -H 'Content-Type: application/json' -d 'pmOnIEX1BHG2Zj3CI45It135RjS30UMZ'
+----

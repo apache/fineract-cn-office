@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ echo '6j0iKMH44oA1OfJVaHTCLAeutUDVfltO' | http PUT 'http://localhost:8080/office/v1/offices/6j0iKMH44oA1OfJVaHTCLAeutUDVfltO' 'Content-Type:application/json'
+----

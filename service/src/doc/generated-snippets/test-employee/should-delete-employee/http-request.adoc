@@ -1,0 +1,8 @@
+[source,http,options="nowrap"]
+----
+DELETE /office/v1/employees/FBea9IQEOII3aaR7xv7jBQCN6dEFrqqY HTTP/1.1
+Accept: */*
+Content-Type: application/json
+Host: localhost:8080
+
+----
