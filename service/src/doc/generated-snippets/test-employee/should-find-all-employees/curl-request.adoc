@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/office/v1/employees' -i -H 'Accept: */*'
+----

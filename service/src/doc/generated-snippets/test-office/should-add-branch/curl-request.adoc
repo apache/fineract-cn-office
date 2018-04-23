@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/office/v1/offices/6j0iKMH44oA1OfJVaHTCLAeutUDVfltO' -i -X PUT -H 'Content-Type: application/json' -d '6j0iKMH44oA1OfJVaHTCLAeutUDVfltO'
+----

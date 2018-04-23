@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/office/v1/employees/GNhkajYzqKNwN4QCRkuPbCl5ZhME0LfO/contacts' -i -X DELETE -H 'Content-Type: image/png'
+----

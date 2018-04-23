@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ http DELETE 'http://localhost:8080/office/v1/offices/l8jKQP4SFczwVTEnYRANZrSfcD2TI1Wj/address' 'Content-Type:*/*'
+----

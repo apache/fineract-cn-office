@@ -1,0 +1,4 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/office/v1/employees/FBea9IQEOII3aaR7xv7jBQCN6dEFrqqY' -i -X DELETE -H 'Accept: */*' -H 'Content-Type: application/json'
+----
