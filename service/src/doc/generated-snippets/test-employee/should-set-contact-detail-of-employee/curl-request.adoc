@@ -1,4 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/office/v1/employees/nqnRpYG4QlyLKtPVrJQDz2mEak2cncBL/contacts' -i -X PUT -H 'Accept: */*' -H 'Content-Type: application/json' -d 'nqnRpYG4QlyLKtPVrJQDz2mEak2cncBL'
-----
