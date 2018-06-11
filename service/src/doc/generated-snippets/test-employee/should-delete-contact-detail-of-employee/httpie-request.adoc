@@ -1,4 +1,0 @@
-[source,bash]
-----
-$ http DELETE 'http://localhost:8080/office/v1/employees/GNhkajYzqKNwN4QCRkuPbCl5ZhME0LfO/contacts' 'Content-Type:image/png'
-----
