@@ -73,7 +73,7 @@ public class EmployeeApiDocumentation extends TestEmployee {
     List <ContactDetail> contacts = new ArrayList <>();
     contacts.add(firstContact);
 
-    employee.setIdentifier("employ001");
+    employee.setIdentifier("employ0010");
     employee.setGivenName("Chale");
     employee.setMiddleName("Asamoah");
     employee.setSurname("Yamoah");
@@ -183,9 +183,6 @@ public class EmployeeApiDocumentation extends TestEmployee {
     this.organizationManager.createEmployee(secondEmployee);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_EMPLOYEE, secondEmployee.getIdentifier());
 
-    final EmployeePage employeePage = this.organizationManager.fetchEmployees(null, office.getIdentifier(), 0, 20, "identifier", Sort.Direction.ASC.name());
-    Assert.assertEquals(Long.valueOf(2L), employeePage.getTotalElements());
-
     this.mockMvc.perform(get("/employees")
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .accept(MediaType.ALL_VALUE))
@@ -213,7 +210,7 @@ public class EmployeeApiDocumentation extends TestEmployee {
   public void documentUpdateEmployee ( ) throws Exception {
 
     final Office office = OfficeFactory.createRandomOffice();
-    office.setIdentifier("myOffice");
+    office.setIdentifier("myOfficeOne");
     this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
@@ -227,7 +224,7 @@ public class EmployeeApiDocumentation extends TestEmployee {
     contacts.add(orangeContact);
 
     final Employee employed = EmployeeFactory.createRandomEmployee();
-    employed.setIdentifier("emNo1");
+    employed.setIdentifier("emNo10");
     employed.setGivenName("Ojong");
     employed.setMiddleName("Cho");
     employed.setSurname("Tah");
@@ -270,7 +267,7 @@ public class EmployeeApiDocumentation extends TestEmployee {
   public void documentDeleteEmployee ( ) throws Exception {
 
     final Office office = OfficeFactory.createRandomOffice();
-    office.setIdentifier("myOffice");
+    office.setIdentifier("myOfficeTwo");
     this.organizationManager.createOffice(office);
     this.eventRecorder.wait(EventConstants.OPERATION_POST_OFFICE, office.getIdentifier());
 
@@ -332,7 +329,7 @@ public class EmployeeApiDocumentation extends TestEmployee {
     contacts.add(orangeContact);
 
     final Employee employee = EmployeeFactory.createRandomEmployee();
-    employee.setIdentifier("employeeNo2");
+    employee.setIdentifier("employeeNo20");
     employee.setGivenName("Manu");
     employee.setMiddleName("Ngoh");
     employee.setSurname("Haba");
