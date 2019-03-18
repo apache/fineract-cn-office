@@ -20,7 +20,7 @@ package org.apache.fineract.cn.office.internal.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.apache.fineract.cn.mariadb.config.EnableMariaDB;
+import org.apache.fineract.cn.postgresql.config.EnablePostgreSQL;
 import org.apache.fineract.cn.office.ServiceConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +30,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableMariaDB
+@EnablePostgreSQL
 @ComponentScan(
     basePackages = {
         "org.apache.fineract.cn.office.internal.command.handler",

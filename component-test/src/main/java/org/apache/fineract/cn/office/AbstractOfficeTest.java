@@ -26,7 +26,7 @@ import org.apache.fineract.cn.office.rest.config.OfficeRestConfiguration;
 import org.apache.fineract.cn.test.env.TestEnvironment;
 import org.apache.fineract.cn.test.fixture.TenantDataStoreContextTestRule;
 import org.apache.fineract.cn.test.fixture.cassandra.CassandraInitializer;
-import org.apache.fineract.cn.test.fixture.mariadb.MariaDBInitializer;
+import org.apache.fineract.cn.test.fixture.postgresql.PostgreSQLInitializer;
 import org.apache.fineract.cn.test.listener.EnableEventRecording;
 import org.apache.fineract.cn.test.listener.EventRecorder;
 import org.junit.After;
@@ -58,14 +58,14 @@ public class AbstractOfficeTest extends SuiteTestEnvironment {
 
   private final static TestEnvironment testEnvironment = new TestEnvironment(APP_NAME);
   private final static CassandraInitializer cassandraInitializer = new CassandraInitializer();
-  private final static MariaDBInitializer mariaDBInitializer = new MariaDBInitializer();
-  private final static TenantDataStoreContextTestRule tenantDataStoreContext = TenantDataStoreContextTestRule.forRandomTenantName(cassandraInitializer, mariaDBInitializer);
+  private final static PostgreSQLInitializer postgreSQLInitializer = new PostgreSQLInitializer();
+  private final static TenantDataStoreContextTestRule tenantDataStoreContext = TenantDataStoreContextTestRule.forRandomTenantName(cassandraInitializer, postgreSQLInitializer);
 
   @ClassRule
   public static TestRule orderClassRules = RuleChain
           .outerRule(testEnvironment)
           .around(cassandraInitializer)
-          .around(mariaDBInitializer)
+          .around(postgreSQLInitializer)
           .around(tenantDataStoreContext);
 
   @Rule
