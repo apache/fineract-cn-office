@@ -18,7 +18,7 @@
 --
 
 CREATE TABLE horus_external_references (
-  id                BIGINT       NOT NULL AUTO_INCREMENT,
+  id                BIGINT       NOT NULL,
   office_identifier VARCHAR(32)  NOT NULL,
   a_type            VARCHAR(32)  NULL,
   a_state           VARCHAR(256) NULL,

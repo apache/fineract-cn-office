@@ -18,7 +18,7 @@
 --
 
 CREATE TABLE horus_offices (
-  id               BIGINT        NOT NULL AUTO_INCREMENT,
+  id               BIGINT        NOT NULL,
   parent_office_id BIGINT        NULL,
   identifier       VARCHAR(32)   NOT NULL,
   a_name           VARCHAR(256)  NOT NULL,
@@ -37,7 +37,7 @@ CREATE TABLE horus_offices (
 );
 
 CREATE TABLE horus_addresses (
-  id           BIGINT       NOT NULL AUTO_INCREMENT,
+  id           BIGINT       NOT NULL,
   office_id    BIGINT       NOT NULL,
   street       VARCHAR(256) NOT NULL,
   city         VARCHAR(256) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE horus_addresses (
 );
 
 CREATE TABLE horus_employees (
-  id                 BIGINT       NOT NULL AUTO_INCREMENT,
+  id                 BIGINT       NOT NULL,
   identifier         VARCHAR(32)  NOT NULL,
   given_name         VARCHAR(256) NULL,
   middle_name        VARCHAR(256) NULL,
@@ -73,7 +73,7 @@ CREATE TABLE horus_employees (
 );
 
 CREATE TABLE horus_contact_details (
-  id               BIGINT       NOT NULL AUTO_INCREMENT,
+  id               BIGINT       NOT NULL,
   employee_id      BIGINT       NOT NULL,
   a_type           VARCHAR(256) NOT NULL,
   a_group          VARCHAR(256) NOT NULL,
