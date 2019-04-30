@@ -1,4 +1,4 @@
-# Apache Fineract CN Office Management
+# Apache Fineract CN Office Management [![Build Status](https://api.travis-ci.com/apache/fineract-cn-office.svg?branch=develop)](https://travis-ci.com/apache/fineract-cn-office)
 
 This service manages an organization and its employees.
 
