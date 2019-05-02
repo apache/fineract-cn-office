@@ -17,11 +17,5 @@
 -- under the License.
 --
 
-CREATE TABLE horus_external_references (
-  id                BIGINT       NOT NULL,
-  office_identifier VARCHAR(32)  NOT NULL,
-  a_type            VARCHAR(32)  NULL,
-  a_state           VARCHAR(256) NULL,
-  CONSTRAINT external_references_pk PRIMARY KEY (id),
-  CONSTRAINT external_references_uq UNIQUE (office_identifier, a_type)
-);
+CREATE TABLE IF NOT EXISTS horus_external_references ( id BIGINT NOT NULL, office_identifier VARCHAR(32) NOT NULL, a_type VARCHAR(32) NULL, a_state VARCHAR(256) NULL, CONSTRAINT external_references_pk PRIMARY KEY (id),
+                                                       CONSTRAINT external_references_uq UNIQUE (office_identifier, a_type));
