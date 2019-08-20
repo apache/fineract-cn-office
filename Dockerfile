@@ -16,7 +16,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-FROM openjdk:8-jdk-alpine
+FROM openjdk:8-jdk-alpine AS builder
+RUN mkdir builddir
+COPY . builddir
+WORKDIR builddir
+RUN ./gradlew publishToMavenLocal
+
+FROM openjdk:8-jdk-alpine AS runner
 
 ARG office_port=2023
 
@@ -25,6 +31,6 @@ ENV server.max-http-header-size=16384 \
     server.port=$office_port
 
 WORKDIR /tmp
-COPY office-service-boot-0.1.0-BUILD-SNAPSHOT.jar .
+COPY --from=builder /builddir/service/build/libs/service-0.1.0-BUILD-SNAPSHOT-boot.jar ./office-service-boot.jar
 
-CMD ["java", "-jar", "office-service-boot-0.1.0-BUILD-SNAPSHOT.jar"]
+CMD ["java", "-jar", "office-service-boot.jar"]
