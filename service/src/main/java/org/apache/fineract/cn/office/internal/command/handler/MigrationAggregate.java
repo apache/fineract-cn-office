@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 import org.apache.fineract.cn.command.annotation.Aggregate;
 import org.apache.fineract.cn.command.annotation.CommandHandler;
 import org.apache.fineract.cn.command.annotation.EventEmitter;
-import org.apache.fineract.cn.mariadb.domain.FlywayFactoryBean;
+import org.apache.fineract.cn.postgresql.domain.FlywayFactoryBean;
 import org.apache.fineract.cn.office.ServiceConstants;
 import org.apache.fineract.cn.office.api.v1.EventConstants;
 import org.apache.fineract.cn.office.internal.command.InitializeServiceCommand;
