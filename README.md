@@ -1,6 +1,7 @@
-# Apache Fineract CN Office Management [![Build Status](https://api.travis-ci.com/apache/fineract-cn-office.svg?branch=develop)](https://travis-ci.com/apache/fineract-cn-office)
+# Apache Fineract CN Office Management [![Build Status](https://api.travis-ci.com/apache/fineract-cn-office.svg?branch=develop)](https://travis-ci.com/apache/fineract-cn-office)  [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/apache/fineract-cn-office)](https://hub.docker.com/r/apache/fineract-cn-office/builds)
 
 This service manages an organization and its employees.
+[Read more](https://cwiki.apache.org/confluence/display/FINERACT/Fineract+CN+Project+Structure#FineractCNProjectStructure-office).
 
 ## Abstract
 Apache Fineract CN is an application framework for digital financial services, a system to support nationwide and cross-national financial transactions and help to level and speed the creation of an inclusive, interconnected digital economy for every nation in the world.
