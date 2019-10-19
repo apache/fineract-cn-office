@@ -31,6 +31,6 @@ ENV server.max-http-header-size=16384 \
     server.port=$office_port
 
 WORKDIR /tmp
-COPY --from=builder /builddir/service/build/libs/service-0.1.0-BUILD-SNAPSHOT-boot.jar ./office-service-boot.jar
+COPY --from=builder /builddir/service/build/libs/service-0.1.x-SNAPSHOT-boot.jar ./office-service-boot.jar
 
 CMD ["java", "-jar", "office-service-boot.jar"]
