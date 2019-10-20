@@ -16,16 +16,16 @@
  */
 
 group 'org.apache.fineract.cn.office'
-version '0.1.0-BUILD-SNAPSHOT'
+version '0.1.x-SNAPSHOT'
 
 ext.versions = [
-        frameworkapi      : '0.1.0-BUILD-SNAPSHOT',
-        frameworklang     : '0.1.0-BUILD-SNAPSHOT',
-        frameworkasync    : '0.1.0-BUILD-SNAPSHOT',
-        frameworkcassandra: '0.1.0-BUILD-SNAPSHOT',
-        frameworkcommand  : '0.1.0-BUILD-SNAPSHOT',
-        frameworktest     : '0.1.0-BUILD-SNAPSHOT',
-        frameworkanubis   : '0.1.0-BUILD-SNAPSHOT',
+        frameworkapi      : '0.1.x-SNAPSHOT',
+        frameworklang     : '0.1.x-SNAPSHOT',
+        frameworkasync    : '0.1.x-SNAPSHOT',
+        frameworkcassandra: '0.1.x-SNAPSHOT',
+        frameworkcommand  : '0.1.x-SNAPSHOT',
+        frameworktest     : '0.1.x-SNAPSHOT',
+        frameworkanubis   : '0.1.x-SNAPSHOT',
         validator         : '5.3.0.Final',
 ]
 
@@ -60,7 +60,7 @@ ext['spring-data-releasetrain.version'] = 'Gosling-SR2A'
 dependencies {
     compile(
             [group: 'com.google.code.findbugs', name: 'jsr305'],
-            [group: 'org.apache.fineract.cn', name: 'postgresql', version: '0.1.0-BUILD-SNAPSHOT'],
+            [group: 'org.apache.fineract.cn', name: 'postgresql', version: '0.1.x-SNAPSHOT'],
             [group: 'postgresql', name: 'postgresql', version: '9.0-801.jdbc4']
     )
 
