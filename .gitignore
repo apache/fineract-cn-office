@@ -5,6 +5,10 @@ target/
 api/out
 component-test/out
 service/out
+.settings
+.project
+.classpath
+bin
 
 # Ignore Gradle GUI config
 gradle-app.setting
