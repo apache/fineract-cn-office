@@ -34,8 +34,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableAutoConfiguration
@@ -52,7 +51,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Import({
     OfficeServiceConfiguration.class
 })
-public class OfficeRestConfiguration extends WebMvcConfigurerAdapter {
+public class OfficeRestConfiguration implements WebMvcConfigurer {
 
   public OfficeRestConfiguration() {
     super();
@@ -63,8 +62,4 @@ public class OfficeRestConfiguration extends WebMvcConfigurerAdapter {
     return LoggerFactory.getLogger(ServiceConstants.REST_LOGGER_NAME);
   }
 
-  @Override
-  public void configurePathMatch(final PathMatchConfigurer configurer) {
-    configurer.setUseSuffixPatternMatch(Boolean.FALSE);
-  }
 }

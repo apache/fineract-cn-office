@@ -17,7 +17,7 @@
 
 buildscript {
     ext {
-        springBootVersion = '2.2.6.RELEASE'
+        springBootVersion = '2.4.1'
     }
 
     repositories {
@@ -29,8 +29,8 @@ plugins {
     id 'com.github.hierynomus.license' version '0.15.0'
     id 'org.nosphere.apache.rat' version '0.6.0'
     id 'com.jfrog.artifactory' version '4.15.1'
-    id 'org.springframework.boot' version '2.2.6.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.springframework.boot' version '2.4.1'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
     id 'maven-publish'
     id 'java'
     id 'idea'
@@ -48,7 +48,7 @@ dependencies {
             [group: 'org.springframework.cloud', name: 'spring-cloud-starter-config'],
             [group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-eureka-client'],
             [group: 'org.springframework.boot', name: 'spring-boot-starter-jetty'],
-            [group: 'org.hibernate', name: 'hibernate-validator', version: versions.validator],
+            [group: 'org.hibernate.validator', name: 'hibernate-validator', version: versions.hibernatevalidator],
             [group: 'org.apache.fineract.cn.office', name: 'api', version: project.version],
             [group: 'org.apache.fineract.cn.anubis', name: 'library', version: versions.frameworkanubis],
             [group: 'com.google.code.gson', name: 'gson'],
@@ -57,8 +57,8 @@ dependencies {
             [group: 'org.apache.fineract.cn', name: 'cassandra', version: versions.frameworkcassandra],
             [group: 'org.apache.fineract.cn', name: 'postgresql', version: versions.frameworkpostgres],
             [group: 'org.apache.fineract.cn', name: 'command', version: versions.frameworkcommand],
-            [group: 'io.netty', name: 'netty-all', version: '4.1.39.Final'],
-            [group: 'io.netty', name: 'netty-transport-native-epoll', version: '4.1.39.Final']
+            [group: 'io.netty', name: 'netty-all', version: '4.1.56.Final'],
+            [group: 'io.netty', name: 'netty-transport-native-epoll', version: '4.1.56.Final']
     )
 }
 
