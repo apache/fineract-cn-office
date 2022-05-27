@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @SuppressWarnings("unused")
-@FeignClient(name="office-v1", path="/office/v1", configuration=CustomFeignClientsConfiguration.class)
+@FeignClient(path="/office/v1", url = "http://${kubernetes.office.service.name}:${kubernetes.office.server.port}", configuration=CustomFeignClientsConfiguration.class)
 public interface OrganizationManager {
 
   @RequestMapping(

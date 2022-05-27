@@ -103,7 +103,6 @@ public class AbstractOfficeTest extends SuiteTestEnvironment {
           basePackages = "org.apache.fineract.cn.office.listener"
   )
   @EnableFeignClients(basePackages = {"org.apache.fineract.cn.office.api.v1.client"})
-  @RibbonClient(name = APP_NAME)
   @EnableEventRecording(maxWait = 5000L)
   @Import({OfficeRestConfiguration.class})
   public static class TestConfiguration {

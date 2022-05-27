@@ -18,18 +18,11 @@
 #
 
 spring:
-  cloud:
-    discovery:
-      enabled: false
-    config:
-      enabled: false
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-  instance:
-    homePageUrl: "http://${eureka.hostname}:2023/office/v1/"
+ cloud:
+   discovery:
+     enabled: false
+   config:
+     enabled: false
 
 server:
   port: 2023
@@ -69,3 +62,14 @@ async:
 
 flyway:
   enabled: false
+
+kubernetes:
+  office:
+    service:
+      name: office-service
+    server:
+      port: 2023
+
+ribbon:
+  eureka:
+    enabled: false
