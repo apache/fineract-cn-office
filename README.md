@@ -1,4 +1,4 @@
-# Apache Fineract CN Office Management [![Build Status](https://api.travis-ci.com/apache/fineract-cn-office.svg?branch=develop)](https://travis-ci.com/apache/fineract-cn-office)  [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/apache/fineract-cn-office)](https://hub.docker.com/r/apache/fineract-cn-office/builds)
+# Apache Fineract CN Office Management [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/apache/fineract-cn-office)](https://hub.docker.com/r/apache/fineract-cn-office/builds)
 
 This service manages an organization and its employees.
 [Read more](https://cwiki.apache.org/confluence/display/FINERACT/Fineract+CN+Project+Structure#FineractCNProjectStructure-office).
